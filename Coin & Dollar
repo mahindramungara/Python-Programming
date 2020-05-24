@@ -1,0 +1,43 @@
+import random
+
+class Coin:
+    def __init__(self, heads = True, rare = False, **dict):
+
+        self.heads = heads
+        self.rare = rare
+        self.color = 'Silver'
+        #self.original_value = 1
+        #self.conversion_factor = 1
+
+        for keys, values in dict.items():
+            setattr(self, keys, values)
+
+        if self.rare is True:
+            self.value = self.original_value * self.conversion_factor
+        else:
+            self.value = self.original_value
+
+    def rust(self):
+        self.color = self.rusty_color
+
+    def clean(self):
+        self.color = self.original_color
+
+    def flip(self):
+        choices = [True, False]
+        self.heads = random.choice(choices)
+        return self.heads
+
+class Dollar(Coin):
+    def __init__(self, heads = True, rare = False):
+        dict = {"original_value": 1.5, "rare": True, "conversion_factor": 2,"rusty_color": "green", "original_color": "green"}
+        super().__init__(**dict)
+
+c1 = Dollar()
+
+print(c1.color, c1.value, c1.rare, c1.conversion_factor, c1.heads)
+
+c1.rust()
+c1.flip()
+
+print(c1.color, c1.value, c1.rare, c1.conversion_factor, c1.heads)
