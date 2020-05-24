@@ -1,0 +1,22 @@
+from types import MethodType
+
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def register_to_do(self, func):
+        self._to_do = func
+        #setattr(self,'_to_do', MethodType(func, self))
+
+    def to_work(self):
+        to_do_work = self._to_do
+        return to_do_work
+
+def math_works(self):
+    return print("returning {} for now".format(self.name))
+
+p1 = Person('Mahindra')
+p1.__dict__
+
+p1.register_to_do(math_works(p1))
+p1.to_work()
