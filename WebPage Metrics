@@ -6,7 +6,9 @@ class WebPage:
         self._page = None
         self._page_size = None
         self._time_to_load = None
-        
+ 
+# property object for url
+
     @property
     def url(self):
         return self._url
@@ -14,6 +16,8 @@ class WebPage:
     @url.setter
     def url(self, name):
         self._url = name
+        
+# property object for page, and similarly likewise other attributes below
         
     @property
     def page(self):
@@ -30,9 +34,11 @@ class WebPage:
     @property
     def time_to_load(self):
             if self._time_to_load is None:
+            # download_page method is expected to set the attributes as soon as called
                 self.download_page()
             return self._time_to_load
-        
+    
+    
     def download_page(self):        
         with urllib.request.urlopen(self._url) as f:
             start_time = perf_counter()
@@ -40,3 +46,10 @@ class WebPage:
             end_time = perf_counter()
             self._page_size = len(self._page)
             self._time_to_load = end_time - start_time  
+            
+    urls = ["https://www.apple.com/", "https://www.wired.com/", "https://www.tesla.com/", "https://www.google.com/"]
+
+    for url in urls:
+        u = WebPage(url)
+        u.download_page()
+        print(u.url, "---", u.page_size, "---", u.time_to_load)
