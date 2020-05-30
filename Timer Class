@@ -1,0 +1,70 @@
+from datetime import timedelta, timezone, datetime
+# importing all the requried timer related modules and classes
+
+class Timer:
+    tz = timezone.utc
+
+# Set timezone 
+
+    @classmethod
+    def set_timezone(cls, offset, timezone_name):
+        cls.tz = timezone(timedelta(hours=offset), timezone_name)
+
+# Retrieve UTC time
+
+    @staticmethod
+    def current_utc_time():
+        return datetime.now(timezone.utc)
+
+# Retrieve time in current timezone (set using set_timezone)
+
+    @classmethod
+    def current_time_tz(cls):
+        return datetime.now(cls.tz)
+
+# start an object timer
+
+    def start_timer(self):
+        self._start_time = self.current_utc_time()
+        self._end_time = None
+
+# end an onject timer
+
+    def end_timer(self):
+        if self._start_time is None:
+            raise TimerError("Timer never started for it to end ...")
+        self._end_time = self.current_utc_time()
+
+# define various usable properties
+
+# start time property
+
+    @property
+    def start_time(self):
+        if self._start_time is None:
+            raise TimerError(" Timer never started ...")
+        return self._start_time.astimezone(self.tz)
+
+# end time property
+
+    @property
+    def end_time(self):
+        if self._start_time is None:
+            raise TimerError(" Timer never started ...")
+        return self._end_time.astimezone(self.tz)
+
+# elapsed time property
+
+    @property
+    def elapsed_time(self):
+        elapsed_time = self._end_time - self._start_time 
+        return elapsed_time.total_seconds()
+      
+      
+  class TimerError(Exception):
+    """ ..."""
+    
+  t1 = Timer()
+  t1.start_timer()
+  t1.end_timer()
+  t1.elapsed_time
