@@ -1,0 +1,65 @@
+x = [" "," "," "]
+y = [" "," "," "]
+z = [" "," "," "]
+
+def print_board():
+    row1 = "|{}|{}|{}|".format(x[0], x[1], x[2])
+    row2 = "|{}|{}|{}|".format(y[0], y[1], y[2])
+    row3 = "|{}|{}|{}|".format(z[0], z[1], z[2])
+    print(row1)
+    print(row2)
+    print(row3)
+
+print_board()
+
+def move_for_x():
+        x_move = int(input("Player 1: Enter Your Move: "))
+        if x_move > 9:
+            print("Enter a number between 1 and 9")
+            move_for_x()
+        if x_move in (1, 2, 3) and x[x_move - 1] == " ":
+            x[x_move - 1] = "X"
+        elif x_move in (4, 5, 6) and y[x_move - 4] == " ":
+            y[x_move - 4] = "X"
+        elif x_move in (7, 8, 9) and z[x_move - 7] == " ":
+            z[x_move - 7] = "X"
+        else:
+            print("Position is taken !")
+            move_for_x()
+        print_board()
+
+def move_for_y():
+        y_move = int(input("Player 2: Enter Your Move: "))
+        if y_move > 9:
+            print ("Enter a number between 1 and 9")
+            move_for_y()
+        if y_move in (1, 2, 3) and x[y_move - 1] == " ":
+            x[y_move - 1] = "Y"
+        elif y_move in (4, 5, 6) and y[y_move-4] == " ":
+            y[y_move - 4] = "Y"
+        elif y_move in (7,8,9) and z[y_move - 7] == " ":
+            z[y_move - 7] = "Y"
+        else:
+            print("Position is taken !")
+            move_for_y()
+        print_board()
+
+def validate():
+    if (x[0] == x[1] == x[2] != " ") \
+             or (y[0] == y[1] == y[2] != " ") \
+             or (z[0] == z[1] == z[2] != " " ) \
+             or (x[0] == y[1] == z[2] != " ") \
+             or (x[2] == y[1] == z[0] != " ") \
+             or (x[0] == y[0] == z[0] != " ") \
+             or (x[1] == y[1] == z[1] != " ") \
+             or (x[2] == y[2] == z[2] != " "):
+         print (" Hurray !!!! You WON THE GAME ")
+         print ()
+         print ()
+
+while True:
+  move_for_x()
+  validate()
+  move_for_y()
+  validate()
+
