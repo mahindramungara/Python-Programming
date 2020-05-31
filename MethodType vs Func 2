@@ -1,0 +1,25 @@
+from types import MethodType
+
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def register_to_do(self, func):
+        setattr(self, '_do_work', MethodType(func,self))
+
+    def do_work(self):
+        do_work_method = self._do_work
+        return do_work_method()
+
+math_teacher = Person('Eric')
+englist_teacher = Person('Mahindra')
+
+def math_works(self):
+ print(f'{self.name} is the name !')
+
+math_teacher.register_to_do(math_works)
+
+math_teacher.do_work()
+
+
+
