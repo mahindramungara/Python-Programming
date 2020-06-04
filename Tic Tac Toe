@@ -1,3 +1,5 @@
+import time
+
 x = [" "," "," "]
 y = [" "," "," "]
 z = [" "," "," "]
@@ -53,7 +55,17 @@ def validate():
              or (x[0] == y[0] == z[0] != " ") \
              or (x[1] == y[1] == z[1] != " ") \
              or (x[2] == y[2] == z[2] != " "):
-         print (" Hurray !!!! You WON THE GAME ")
+         print ()
+         print ()
+         print (" --- YOU WON THE GAME --- ")
+         print()
+         for i in range(1,35):
+             print("X", end = "")
+             time.sleep(0.085)
+         print("---H u r r a y---", end = "")
+         for i in range(1,35):
+             print("X", end = "")
+             time.sleep(0.085)
          print ()
          print ()
 
@@ -62,4 +74,3 @@ while True:
   validate()
   move_for_y()
   validate()
-
