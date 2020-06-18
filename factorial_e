@@ -1,0 +1,23 @@
+
+def factorial(n):
+    m = 1
+    for i in range(2, n + 1):
+        m = m * i
+    return m
+
+# function to determine the value of e
+
+def compute_e(x):
+    e = 1
+    for i in range(1,x):
+        e = e + 1/factorial(i)
+    return e
+
+print (compute_e(8))
+
+# at which point is the relative addition of value into computation of e irrelevant
+
+for i in range(1,100):
+    k = (compute_e(i)-compute_e(i-1))/((compute_e(i-1)))*100
+    if k > 0.002:
+     print (i, "---", compute_e(i), "-----------------", round(k,1),"%" )
