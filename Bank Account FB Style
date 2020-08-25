@@ -1,0 +1,184 @@
+import numbers
+import itertools
+from collections import namedtuple
+from datetime import timedelta, datetime, timezone
+
+class TimeZone:
+
+    def __init__(self, name, offset_hours, offset_minutes):
+
+        if len(str(name).strip()) != 0 or name is not None:
+            self._name = name
+        else:
+            raise ValueError("timezone name should not be empty or none ... ")
+
+        if isinstance(offset_hours, numbers.Integral):
+            self._offset_hours = offset_hours
+        else:
+            raise ValueError("offset hours should be an integer ... ")
+
+        if isinstance(offset_minutes, numbers.Integral):
+             self._offset_minutes = offset_minutes
+        else:
+             raise ValueError("offset minutes should be an integer ... ")
+
+        if offset_hours >14 or offset_hours < -12 or offset_minutes > 59 or offset_minutes < -59:
+             raise ValueError("offset hours incorrect 14/-12 or offset_minutes -59/59")
+
+        self._offset = timedelta(hours = offset_hours, minutes = offset_minutes)
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def offset_hours(self):
+        return self._offset_hours
+
+    @property
+    def offset_minutes(self):
+        return self._offset_minutes
+
+    @property
+    def offset(self):
+        return self._offset
+
+    def __eq__(self, object):
+        return (isinstance(object, TimeZone) and self.offset_hours == object.offset_hours
+                and self.offset_minutes == others.offset_minutes)
+
+    def __repr__(self):
+        return f"TimeZone = {self.name}, Offset = {self.offset}"
+
+class Account:
+
+    transaction_counter = itertools.count(1000)
+    _interest_rate = 0.25 # percentage
+
+    _transaction_codes = {
+        'deposit':'D',
+        'withdraw': 'W',
+        'interest': 'I',
+        'rejected': 'X'
+        }
+
+    def __init__(self, account_number, first_name, last_name, timezone = TimeZone("UTC", 0,0), initial_balance = 100):
+        self._account_number = account_number
+        self._first_name = first_name
+        self._last_name = last_name
+        self._timezone = timezone
+        self._balance = float(initial_balance)
+
+    def confirmation_code(self, transaction_code):
+        t_zone = timezone(self.timezone.offset, self.timezone.name)
+        dt_time = datetime.now(t_zone).strftime("%y%m%d%H%S")
+        return f'{transaction_code}-{self.account_number}-{dt_time}-{next(Account.transaction_counter)}'
+
+    def make_transaction(self):
+        return self.confirmation_code("D")
+
+    @property
+    def balance(self):
+        return self._balance
+
+    @balance.setter
+    def balance(self, value):
+        if isinstance(value, numbers.Real):
+            self._balance = value
+
+    @property
+    def account_number(self):
+        return self._account_number
+
+    @property
+    def first_name(self):
+        return self._first_name
+
+    @property
+    def last_name(self):
+        return self._last_name
+
+    @property
+    def timezone(self):
+        return self._timezone
+
+    @timezone.setter
+    def timezone(self, value):
+        if isinstance(value, TimeZone):
+            self._timezone = value
+        else:
+            raise ValueError("only TimeZone objects need to be passed")
+
+    @classmethod
+    def get_interest_rate(cls):
+        return cls._interest_rate
+
+    @classmethod
+    def set_interest_rate(cls, rate):
+        if isinstance(rate, numbers.Real) and rate > 0:
+            cls._interest_rate = rate
+        else:
+            raise ValueError("Interest Rate should be a Rational Number and Positive")
+
+    confirmation = namedtuple('confirmation', 'account_number, transaction_code, transaction_id, dt, dt_str')
+
+    @staticmethod
+    def parse_confirmation_code(confirmation_code, preferred_time_zone = TimeZone("UST",0,0)):
+
+        confirmation = namedtuple('confirmation','account_number, transaction_code, transaction_id, dt, dt_str')
+
+        parts = confirmation_code.split('-')
+
+        if len(parts) != 4:
+            raise ValueError('Incorrect Confirmation Code')
+
+        transaction_code, account_number, dt_time_str, transaction_id = parts
+
+        try:
+            dt_time = datetime.strptime(dt_time_str, '%Y%m%d%H%M%S')
+        except ValueError as ex:
+            raise ValueError('Invalid Datetime') from ex
+
+        dt_preferred_str = f"{dt_time} ({preferred_time_zone.name})"
+
+        return confirmation(account_number,transaction_code, transaction_id, dt_time, dt_preferred_str)
+
+    def deposit(self, value):
+
+        if not isinstance(value, numbers.Real):
+            raise ValueError(" Deposit Amount should be a real number ")
+        if value <= 0:
+            raise ValueError(" Deposit Amount should be positive ")
+
+        self.balance += value
+        print("successful Deposit into account #", self.account_number, "of","$",value)
+
+        transaction_code = Account._transaction_codes["deposit"]
+        conf_code = self.confirmation_code(transaction_code)
+
+        return conf_code
+
+    def withdrawal(self, value):
+
+        if not isinstance(value, numbers.Real):
+            raise ValueError("  Withdrawal should be a real number ")
+        if value <= 0:
+            raise ValueError(" Withdrawal amount should be positive ")
+
+        self.balance -= value
+        print("amount withdrawn", value)
+
+        transaction_code = Account._transaction_codes["withdraw"]
+        conf_code = self.confirmation_code(transaction_code)
+
+        return conf_code
+
+    def pay_interest_rate(self):
+
+        interest = Account.get_interest_rate()*self.balance
+        self.balance += interest
+
+        transaction_code = Account._transaction_codes["interest"]
+        confirm_code = self.confirmation_code(transaction_code)
+
+        return confirm_code
